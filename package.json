@@ -16,5 +16,8 @@
     "url": "https://github.com/eholtrop/NFC-Hack/issues"
   },
   "homepage": "https://github.com/eholtrop/NFC-Hack#readme",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "cordova": "5.4.1"
+  }
 }

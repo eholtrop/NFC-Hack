@@ -1,0 +1,19 @@
+{
+  "name": "nfc-hack",
+  "version": "0.0.1",
+  "description": "Archon Systems NFC hackathon project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eholtrop/NFC-Hack.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/eholtrop/NFC-Hack/issues"
+  },
+  "homepage": "https://github.com/eholtrop/NFC-Hack#readme",
+  "private": true,
+  "dependencies": {

@@ -1,6 +1,7 @@
 package com.nfchack.archon.nfchack;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -24,6 +25,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nfchack.archon.nfchack.services.Api;
 import com.nfchack.archon.nfchack.utils.NfcUtils;
 
 import butterknife.Bind;
@@ -61,6 +63,18 @@ public class MainActivity extends AppCompatActivity {
         } else {
             mText.setText("NFC is enabled");
         }
+
+        Api.GET(this, new Api.Listener() {
+            @Override
+            public void OnResponse(final String str) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mText.setText(str);
+                    }
+                });
+            }
+        });
     }
 
     @Override

@@ -50,7 +50,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.text)
-        private TextView Name;
+        TextView Name;
 
         public ViewHolder(View itemView) {
             super(itemView);

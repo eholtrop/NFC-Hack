@@ -24,6 +24,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nfchack.archon.nfchack.utils.NfcUtils;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -67,49 +69,22 @@ public class MainActivity extends AppCompatActivity {
         switch(intent.getAction()) {
             case NfcAdapter.ACTION_TAG_DISCOVERED:
 
-                if(intent.hasExtra(NfcAdapter.EXTRA_ID)) {
+                Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+                String nfcMessage = ("Hello from Archon Systems");
+                Toast.makeText(this, "NFC Found, Writing Data", Toast.LENGTH_LONG).show();
+                boolean result = NfcUtils.write(this, tag, nfcMessage);
 
-                } else if(intent.hasExtra(NfcAdapter.EXTRA_TAG)) {
-                    Toast.makeText(this, intent.getStringExtra(NfcAdapter.EXTRA_TAG), Toast.LENGTH_SHORT).show();
+                if(result){
+                    Toast.makeText(this, "NFC Write Succeeded", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "NFC Write Failed", Toast.LENGTH_LONG).show();
                 }
-
-                Toast.makeText(this, "NFC Intent Received", Toast.LENGTH_LONG).show();
 
                 break;
         }
 
 
         super.onNewIntent(intent);
-    }
-
-    private void formatTag(Tag tag, NdefMessage message) {
-            try {
-                NdefFormatable formatable = NdefFormatable.get(tag);
-
-                if(formatable == null) {
-                    Toast.makeText(this, "Tag invalid", Toast.LENGTH_SHORT).show();
-                }
-
-                formatable.connect();
-                formatable.format(message);
-                formatable.close();
-
-            } catch (Exception e) {
-                Log.e("formatTag", e.getMessage());
-            }
-    }
-
-    private void writeNfcMessage(Tag tag, NdefMessage message) {
-        try{
-
-            if(tag == null) return;
-        } catch(Exception e) {
-            Log.e("writeMEssage", e.getMessage());
-
-        }
-    }
-
-    private void createNdefMessage(String content) {
     }
 
     @Override

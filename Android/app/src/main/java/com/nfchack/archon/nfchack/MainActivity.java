@@ -15,6 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,11 +31,14 @@ import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
     @Bind(R.id.text)
     public TextView mText;
+    @Bind(R.id.write)
+    EditText Write;
 
     private NfcAdapter mNfcAdapter;
 
@@ -85,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         Api.POST(this);
     }
 
+
     @Override
     protected void onNewIntent(Intent intent) {
 
@@ -92,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
             case NfcAdapter.ACTION_NDEF_DISCOVERED:
 
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                String nfcMessage = CreateNfcRequest();
-                Toast.makeText(this, "NFC Found, Writing Data", Toast.LENGTH_LONG).show();
+                String nfcMessage = getWriteText();
+                Toast.makeText(this, "NFC Found, Writing Data: " + getWriteText(), Toast.LENGTH_LONG).show();
                 boolean result = NfcUtils.write(this, tag, nfcMessage);
 
                 if(result){
@@ -109,8 +115,8 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
     }
 
-    private String CreateNfcRequest() {
-        return "http://httpbin.org/get?site=code&network=tutsplus";
+    public String getWriteText() {
+        return Write.getText().toString();
     }
 
     @Override
@@ -147,10 +153,6 @@ public class MainActivity extends AppCompatActivity {
 
         mNfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilter, null);
 
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-            processIntent(getIntent());
-            Toast.makeText(this, "NFC tag read", Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
@@ -158,9 +160,5 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         mNfcAdapter.disableForegroundDispatch(this);
-    }
-
-    private void processIntent(Intent i) {
-
     }
 }

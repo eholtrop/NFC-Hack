@@ -20,6 +20,8 @@ import com.nfchack.archon.nfchack.models.NfcRequest;
 import com.nfchack.archon.nfchack.services.Api;
 import com.nfchack.archon.nfchack.viewModels.NfcViewModel;
 
+import org.json.JSONObject;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.functions.Action1;
@@ -45,10 +47,15 @@ public class NfcActivity extends AppCompatActivity {
             public void call(String request) {
                 Api.GET(NfcActivity.this, new Api.Listener() {
                     @Override
-                    public void OnResponse(String str) {
+                    public void OnGetResponse(JSONObject response) {
                         Intent i = new Intent(NfcActivity.this, OrderActivity.class);
-                        i.putExtra("order_json", str);
+                        i.putExtra("order_json", response.toString());
                         startActivity(i);
+                    }
+
+                    @Override
+                    public void OnPostResponse(JSONObject response) {
+
                     }
                 });
             }

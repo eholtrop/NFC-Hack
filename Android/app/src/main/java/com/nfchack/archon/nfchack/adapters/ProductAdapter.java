@@ -23,8 +23,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     private List<String> Items;
     private Context _context;
 
-    public ProductAdapter(Context context) {
+    public ProductAdapter(Context context, List<String> items) {
         _context = context;
+        Items = items;
     }
 
     @Override

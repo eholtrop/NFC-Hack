@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.nfc.tech.NfcA;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -68,25 +69,6 @@ public class MainActivity extends AppCompatActivity {
             mText.setText("NFC is enabled");
         }
 
-        Api.GET(this, new Api.Listener() {
-            @Override
-            public void OnGetResponse(final JSONObject response) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            mText.setText("Order Status: " + response.getString("status"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
-
-            public void OnPostResponse(final String str) {
-            }
-        });
-
         Api.POST(this);
     }
 
@@ -94,25 +76,28 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
 
-        switch(intent.getAction()) {
-            case NfcAdapter.ACTION_NDEF_DISCOVERED:
+        String s = intent.getAction();
+        if (s.equals(NfcAdapter.ACTION_NDEF_DISCOVERED) || s.equals(NfcAdapter.ACTION_TAG_DISCOVERED)) {
+            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+            String nfcMessage = getWriteText();
+            Toast.makeText(this, "NFC Found, Writing Data: " + getWriteText(), Toast.LENGTH_LONG).show();
+            boolean result = NfcUtils.write(this, tag, nfcMessage);
 
-                Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                String nfcMessage = getWriteText();
-                Toast.makeText(this, "NFC Found, Writing Data: " + getWriteText(), Toast.LENGTH_LONG).show();
-                boolean result = NfcUtils.write(this, tag, nfcMessage);
+            if (result) {
+                Toast.makeText(this, "NFC Write Succeeded", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "NFC Write Failed", Toast.LENGTH_LONG).show();
+            }
 
-                if(result){
-                    Toast.makeText(this, "NFC Write Succeeded", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(this, "NFC Write Failed", Toast.LENGTH_LONG).show();
-                }
 
-                break;
         }
 
 
         super.onNewIntent(intent);
+    }
+
+    public void parseTag() {
+
     }
 
     public String getWriteText() {

@@ -28,9 +28,8 @@ public class Api {
         void OnPostResponse(String response);
     }
 
-    public static void GET(Context context, final Listener listener) {
+    public static void GET(Context context, final String url, final Listener listener) {
 
-        String url = "https://nflo.herokuapp.com/o";
 
         JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
             @Override

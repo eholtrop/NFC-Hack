@@ -45,7 +45,7 @@ public class NfcActivity extends AppCompatActivity {
         ViewModel.Request.subscribe(new Action1<String>() {
             @Override
             public void call(String request) {
-                Api.GET(NfcActivity.this, new Api.Listener() {
+                Api.GET(NfcActivity.this, request, new Api.Listener() {
                     @Override
                     public void OnGetResponse(JSONObject response) {
                         Intent i = new Intent(NfcActivity.this, OrderActivity.class);
@@ -54,7 +54,7 @@ public class NfcActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void OnPostResponse(JSONObject response) {
+                    public void OnPostResponse(String response) {
 
                     }
                 });

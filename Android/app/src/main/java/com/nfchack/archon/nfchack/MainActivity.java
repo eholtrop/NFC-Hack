@@ -18,6 +18,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.nfchack.archon.nfchack.models.NfcRequest;
+import com.nfchack.archon.nfchack.models.RequestType;
 import com.nfchack.archon.nfchack.services.Api;
 import com.nfchack.archon.nfchack.utils.NfcUtils;
 
@@ -86,10 +89,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
 
         switch(intent.getAction()) {
-            case NfcAdapter.ACTION_TAG_DISCOVERED:
+            case NfcAdapter.ACTION_NDEF_DISCOVERED:
 
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                String nfcMessage = ("Hello from Archon Systems");
+                String nfcMessage = CreateNfcRequest();
                 Toast.makeText(this, "NFC Found, Writing Data", Toast.LENGTH_LONG).show();
                 boolean result = NfcUtils.write(this, tag, nfcMessage);
 
@@ -104,6 +107,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         super.onNewIntent(intent);
+    }
+
+    private String CreateNfcRequest() {
+        return "http://httpbin.org/get?site=code&network=tutsplus";
     }
 
     @Override

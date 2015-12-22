@@ -16,8 +16,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.nfchack.archon.nfchack.adapters.ProductAdapter;
+import com.nfchack.archon.nfchack.models.NfcRequest;
+import com.nfchack.archon.nfchack.services.Api;
+import com.nfchack.archon.nfchack.viewModels.NfcViewModel;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
+import rx.functions.Action1;
 
 public class NfcActivity extends AppCompatActivity {
 
@@ -25,11 +30,13 @@ public class NfcActivity extends AppCompatActivity {
     RecyclerView List;
 
     private ProductAdapter mAdapter;
+    private NfcViewModel ViewModel = new NfcViewModel();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfc);
+        ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -37,6 +44,18 @@ public class NfcActivity extends AppCompatActivity {
         mAdapter = new ProductAdapter(this);
 
         //TODO: call api and retreive all products associated with order
+
+        ViewModel.Request.subscribe(new Action1<String>() {
+            @Override
+            public void call(String request) {
+                Api.GET(NfcActivity.this, new Api.Listener() {
+                    @Override
+                    public void OnResponse(String str) {
+                        Toast.makeText(NfcActivity.this, str, Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -48,12 +67,9 @@ public class NfcActivity extends AppCompatActivity {
             // Read the first record which contains the NFC data
             Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
             NdefRecord relayRecord = ((NdefMessage)rawMsgs[0]).getRecords()[0];
-            String nfcData = new String(relayRecord.getPayload());
+            ViewModel.setRequest(new String(relayRecord.getPayload()));
 
-            // Display the data on the tag
-            Toast.makeText(this, nfcData, Toast.LENGTH_SHORT).show();
 
-            // Do other stuff with the data...
         }
     }
 }

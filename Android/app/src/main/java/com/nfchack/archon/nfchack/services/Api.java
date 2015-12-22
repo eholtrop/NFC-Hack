@@ -89,4 +89,36 @@ public class Api {
     }
 
 
+    public static void PUT(Context context, String url, final String status) {
+
+        StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+//                        try {
+//                            //JSONObject jsonResponse = new JSONObject(response).getJSONObject("form");
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        }
+        ) {
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<>();
+                // the PUT parameters:
+                params.put("status", status);
+                return params;
+            }
+        };
+        Volley.newRequestQueue(context).add(putRequest);
+    }
+
+
 }

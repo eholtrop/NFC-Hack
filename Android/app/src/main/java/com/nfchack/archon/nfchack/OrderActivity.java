@@ -55,14 +55,19 @@ public class OrderActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.set_packed:
+                Api.PUT(this, _order.url, "packed");
                 break;
             case R.id.set_picked:
+                Api.PUT(this, _order.url, "picked");
                 break;
             case R.id.set_received:
+                Api.PUT(this, _order.url, "received");
                 break;
             case R.id.set_shipped:
+                Api.PUT(this, _order.url, "shipped");
                 break;
             case R.id.reset_order:
+                Api.PUT(this, _order.url, "created");
                 break;
         }
         return super.onOptionsItemSelected(item);

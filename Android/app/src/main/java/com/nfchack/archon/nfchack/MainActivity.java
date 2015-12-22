@@ -21,6 +21,9 @@ import android.widget.Toast;
 import com.nfchack.archon.nfchack.services.Api;
 import com.nfchack.archon.nfchack.utils.NfcUtils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -59,15 +62,24 @@ public class MainActivity extends AppCompatActivity {
 
         Api.GET(this, new Api.Listener() {
             @Override
-            public void OnResponse(final String str) {
+            public void OnGetResponse(final JSONObject response) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mText.setText(str);
+                        try {
+                            mText.setText("Order Status: " + response.getString("status"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
             }
+
+            public void OnPostResponse(final JSONObject response) {
+            }
         });
+
+        //Api.POST(this);
     }
 
     @Override

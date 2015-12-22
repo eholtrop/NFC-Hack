@@ -1,36 +1,45 @@
 package com.nfchack.archon.nfchack;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.nfc.NdefMessage;
-import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
-import android.nfc.tech.NdefFormatable;
+import android.nfc.tech.NfcA;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.nfchack.archon.nfchack.models.NfcRequest;
+import com.nfchack.archon.nfchack.models.RequestType;
+import com.nfchack.archon.nfchack.services.Api;
+import com.nfchack.archon.nfchack.utils.NfcUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
     @Bind(R.id.text)
     public TextView mText;
+    @Bind(R.id.write)
+    EditText Write;
 
     private NfcAdapter mNfcAdapter;
 
@@ -59,57 +68,40 @@ public class MainActivity extends AppCompatActivity {
         } else {
             mText.setText("NFC is enabled");
         }
+
+        Api.POST(this);
     }
+
 
     @Override
     protected void onNewIntent(Intent intent) {
 
-        switch(intent.getAction()) {
-            case NfcAdapter.ACTION_TAG_DISCOVERED:
+        String s = intent.getAction();
+        if (s.equals(NfcAdapter.ACTION_NDEF_DISCOVERED) || s.equals(NfcAdapter.ACTION_TAG_DISCOVERED)) {
+            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+            String nfcMessage = getWriteText();
+            Toast.makeText(this, "NFC Found, Writing Data: " + getWriteText(), Toast.LENGTH_LONG).show();
+            boolean result = NfcUtils.write(this, tag, nfcMessage);
 
-                if(intent.hasExtra(NfcAdapter.EXTRA_ID)) {
+            if (result) {
+                Toast.makeText(this, "NFC Write Succeeded", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "NFC Write Failed", Toast.LENGTH_LONG).show();
+            }
 
-                } else if(intent.hasExtra(NfcAdapter.EXTRA_TAG)) {
-                    Toast.makeText(this, intent.getStringExtra(NfcAdapter.EXTRA_TAG), Toast.LENGTH_SHORT).show();
-                }
 
-                Toast.makeText(this, "NFC Intent Received", Toast.LENGTH_LONG).show();
-
-                break;
         }
 
 
         super.onNewIntent(intent);
     }
 
-    private void formatTag(Tag tag, NdefMessage message) {
-            try {
-                NdefFormatable formatable = NdefFormatable.get(tag);
+    public void parseTag() {
 
-                if(formatable == null) {
-                    Toast.makeText(this, "Tag invalid", Toast.LENGTH_SHORT).show();
-                }
-
-                formatable.connect();
-                formatable.format(message);
-                formatable.close();
-
-            } catch (Exception e) {
-                Log.e("formatTag", e.getMessage());
-            }
     }
 
-    private void writeNfcMessage(Tag tag, NdefMessage message) {
-        try{
-
-            if(tag == null) return;
-        } catch(Exception e) {
-            Log.e("writeMEssage", e.getMessage());
-
-        }
-    }
-
-    private void createNdefMessage(String content) {
+    public String getWriteText() {
+        return Write.getText().toString();
     }
 
     @Override
@@ -146,10 +138,6 @@ public class MainActivity extends AppCompatActivity {
 
         mNfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilter, null);
 
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-            processIntent(getIntent());
-            Toast.makeText(this, "NFC tag read", Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
@@ -157,9 +145,5 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         mNfcAdapter.disableForegroundDispatch(this);
-    }
-
-    private void processIntent(Intent i) {
-
     }
 }

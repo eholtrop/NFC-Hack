@@ -26,8 +26,6 @@ import rx.functions.Action1;
 
 public class NfcActivity extends AppCompatActivity {
 
-    @Bind(R.id.list)
-    RecyclerView List;
 
     private ProductAdapter mAdapter;
     private NfcViewModel ViewModel = new NfcViewModel();
@@ -40,9 +38,6 @@ public class NfcActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        List.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new ProductAdapter(this);
-
         //TODO: call api and retreive all products associated with order
 
         ViewModel.Request.subscribe(new Action1<String>() {
@@ -51,7 +46,9 @@ public class NfcActivity extends AppCompatActivity {
                 Api.GET(NfcActivity.this, new Api.Listener() {
                     @Override
                     public void OnResponse(String str) {
-                        Toast.makeText(NfcActivity.this, str, Toast.LENGTH_LONG).show();
+                        Intent i = new Intent(NfcActivity.this, OrderActivity.class);
+                        i.putExtra("order_json", str);
+                        startActivity(i);
                     }
                 });
             }

@@ -78,11 +78,11 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
 
-            public void OnPostResponse(final JSONObject response) {
+            public void OnPostResponse(final String str) {
             }
         });
 
-        //Api.POST(this);
+        Api.POST(this);
     }
 
     @Override

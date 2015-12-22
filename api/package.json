@@ -4,6 +4,7 @@
   "description": "Archon Systems NFC hackathon project",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -11,9 +12,16 @@
     "url": "git+https://github.com/eholtrop/NFC-Hack.git"
   },
   "author": "",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/eholtrop/NFC-Hack/issues"
   },
   "homepage": "https://github.com/eholtrop/NFC-Hack#readme",
   "private": true,
   "dependencies": {
+    "body-parser": "1.14.2",
+    "express": "4.13.3",
+    "lodash": "3.10.1",
+    "mongoose": "4.3.3"
+  }
+}
